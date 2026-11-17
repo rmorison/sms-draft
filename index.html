@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>SMS draft</title>
+<style>
+  body { font: 18px/1.4 system-ui, sans-serif; margin: 0; padding: 24px 16px; background: #fff; color: #111; }
+  @media (prefers-color-scheme: dark) { body { background: #111; color: #eee; } pre { background: #222; } }
+  a.btn { display: block; text-align: center; padding: 16px; border-radius: 12px; background: #0b57d0; color: #fff; text-decoration: none; font-weight: 600; }
+  pre { white-space: pre-wrap; background: #f2f2f2; padding: 12px; border-radius: 8px; }
+  .to { opacity: .7; }
+</style>
+</head>
+<body>
+<!--
+  Trampoline from an https link (which chat apps will linkify) to an sms: draft.
+  Usage: https://<host>/sms-draft/#to=+15555550123&body=Hello%20there
+  Everything is in the URL fragment, which browsers never send to the server,
+  so the host sees only a request for this static page.
+-->
+<p class="to" id="to"></p>
+<pre id="body"></pre>
+<a class="btn" id="open" href="#">Open in Messages</a>
+<script>
+  var p = new URLSearchParams(location.hash.slice(1));
+  var to = (p.get("to") || "").replace(/[^+\d]/g, "");
+  var body = p.get("body") || "";
+  var href = "sms:" + to + "?body=" + encodeURIComponent(body);
+  document.getElementById("to").textContent = to ? "To " + to : "No recipient";
+  document.getElementById("body").textContent = body;
+  document.getElementById("open").href = href;
+  location.href = href;
+</script>
+</body>
+</html>
